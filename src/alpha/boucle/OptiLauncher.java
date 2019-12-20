@@ -15,7 +15,7 @@ public class OptiLauncher {
 
 	@SuppressWarnings("preview")
 	public static void main(String[] args) {
-		int loop = 4;
+		int loop = 7;
 
 		long time = System.currentTimeMillis();
 		switch (loop) {

@@ -451,12 +451,7 @@ public class ProcessOpti {
 	 * @return ChangePathOpti the optimization to do to the path
 	 */
 	private ChangePathOpti searchReplaceAnyByNone(Node previousNode, Node nextNode, List<Node> dieNodes, Node... oldInter) {
-
-		if (pos(-339,-6) == previousNode.position && pos(-341,-6) == nextNode.position) {
-			int t=0;
-			t=t+1;
-		}
-
+		
 		ChangePathOpti changePath = new ChangePathOpti("L" + (oldInter.length + 2) + "0", dieNodes);
 
 		// check for node to be deleted
@@ -476,7 +471,7 @@ public class ProcessOpti {
 	}
 
 	/**
-	 * Check optimization for the inter nodes to be replace with two others.
+	 * Check optimization for the inter nodes to be replace with one other.
 	 * Search for die node to be delete (if outside the range of the new node) or to be added.
 	 *
 	 * @param previous node before the nodes to optimize
@@ -488,7 +483,7 @@ public class ProcessOpti {
 	private ChangePathOpti searchReplaceAnyByOne(Node previous, Node next, List<Node> dieNodes, Node... oldInter) {
 		ChangePathOpti changePath = new ChangePathOpti("L" + (oldInter.length + 2) + "1", dieNodes);
 
-		if (previous.isInRange(next) || previous.position.isNotInRangeTwoMove(next.position)) {
+		if (previous.position.isNotInRangeTwoMove(next.position)) {
 			// ignore optimization possible with a simple delete / ignore if impossible
 			return changePath;
 		}
@@ -504,9 +499,11 @@ public class ProcessOpti {
 			interCases.add(oldInter[0].position);
 		}
 		for (Position inter : interCases) {
-			if (allPathPosition.contains(inter)) {
+			if (allPathPosition.contains(inter) && (oldInter.length != 1 || oldInter[0].position != inter)) {
+				// avoid existing position except for the one case to search die node without moving
 				continue;
 			}
+
 			Node interNew = new Node(inter);
 
 			List<Node> dieNodeOutOfRange = new ArrayList<>(dieNodes);
