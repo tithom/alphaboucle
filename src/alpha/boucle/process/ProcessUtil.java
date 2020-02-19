@@ -43,6 +43,7 @@ public class ProcessUtil {
 		int totalNull = 0;
 		int nbDiePos = 0;
 		int nbCanDiePos = 0;
+		int nbFacultDie = 0;
 		for (Node n : path) {
 			pathStr.append(toExcel? n.toStringCopy() : n).append("\n");
 			totalMinerai += n.getMinerai();
@@ -55,12 +56,13 @@ public class ProcessUtil {
 			else if (n.getCanDie()) {
 				nbCanDiePos++;
 			}
+			nbFacultDie += n.getNbChild();
 		}
 		String moyenneTot = String.format("%,.2f", totalMinerai / (float) sizePath);
 
 		String resume = "Trajet " + first + " vers " + last +
 				" - Nb Case : " + sizePath + " (dont " + totalNull + " null) - Total : " + totalMinerai +
-				", Moyenne : " + moyenneTot + " - Nb Die : " + nbDiePos + " (can die : " + nbCanDiePos + ")";
+				", Moyenne : " + moyenneTot + " - Nb Die : " + nbDiePos + " (can die : " + nbCanDiePos + ") - Nb facult : " + nbFacultDie;
 		LogResult.out(resume);
 		if (withPath) {
 			LogResult.out(pathStr.toString());

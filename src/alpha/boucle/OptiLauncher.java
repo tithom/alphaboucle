@@ -15,7 +15,7 @@ public class OptiLauncher {
 
 	@SuppressWarnings("preview")
 	public static void main(String[] args) {
-		int loop = 7;
+		int loop = 6;
 
 		long time = System.currentTimeMillis();
 		switch (loop) {
@@ -43,6 +43,7 @@ public class OptiLauncher {
 		else {
 			opti = new ProcessOpti("routeV4_test.csv");
 			opti.setTabIncreaseLoopMinima(15);
+			opti.setThresholdOtherDieNode(180);
 		}
 
 		opti.process();
@@ -61,6 +62,7 @@ public class OptiLauncher {
 			opti = new ProcessOpti("routeV6_opti.csv");
 			opti.setTabDecreaseLoopMinima(11);
 			opti.setTabIncreaseLoopMinima(-10);
+			opti.setThresholdOtherDieNode(200);
 		}
 
 		opti.process();
@@ -91,6 +93,7 @@ public class OptiLauncher {
 			VISION = 4;
 			opti = new ProcessOpti("routeV5_first.csv");
 			opti.setTabIncreaseLoopMinima(0);
+			opti.setThresholdOtherDieNode(180);
 		}
 		else {
 			opti = new ProcessOpti("routeV5_opti.csv");

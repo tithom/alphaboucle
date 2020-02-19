@@ -67,6 +67,8 @@ public class ProcessOpti {
 	private int increaseLoopMinima = 0;
 	/** Current number of minerai needed to decrease the size of the path. */
 	private int decreaseLoopMinima = 0;
+	/** Threshold for facultatives die nodes. */
+	private int thresholdOtherDieNode = 190;
 
 	/** True if an optimization has been found. */
 	boolean isChange = false;
@@ -451,7 +453,7 @@ public class ProcessOpti {
 	 * @return ChangePathOpti the optimization to do to the path
 	 */
 	private ChangePathOpti searchReplaceAnyByNone(Node previousNode, Node nextNode, List<Node> dieNodes, Node... oldInter) {
-		
+
 		ChangePathOpti changePath = new ChangePathOpti("L" + (oldInter.length + 2) + "0", dieNodes);
 
 		// check for node to be deleted
@@ -983,6 +985,26 @@ public class ProcessOpti {
 	}
 
 	/**
+	 * Add facultative die node better than thresholdOtherDieNode for all node that is not a die node
+	 */
+	private void searchOtherDieNodes() {
+		for (Node node : processPath) {
+			if (node.die) {
+				// can't add facultative die node on a already dying node
+				continue;
+			}
+			Collection<Position> accessiblePosition = getAccessiblePosition(node.position, null);
+			for (Position position : accessiblePosition) {
+				Node dieNode = new Node(position);
+				if (dieNode.getMinerai() >= thresholdOtherDieNode) {
+					node.addChild(dieNode);
+					allPathPosition.add(position);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Run the algorithm. Check the starting path is valid, and loop on the optimize function as long as it finds new optimization.
 	 */
 	public void process() {
@@ -1013,6 +1035,9 @@ public class ProcessOpti {
 			//return;
 		}
 
+		// search for die node worst than the average, but probably still OK for the speed of the level
+		searchOtherDieNodes();
+
 		ProcessUtil.displayPath(processPath, true, true);
 
 		if (checkDuration != null) {
@@ -1028,6 +1053,11 @@ public class ProcessOpti {
 	/** Set decrease threshold */
 	public void setTabDecreaseLoopMinima(int... tabDecreaseLoopMinima) {
 		this.tabDecreaseLoopMinima = tabDecreaseLoopMinima;
+	}
+
+	/** Set facultative die node threshold */
+	public void setThresholdOtherDieNode(int thresholdOtherDieNode) {
+		this.thresholdOtherDieNode = thresholdOtherDieNode;
 	}
 
 	public LinkedList<Node> getProcessPath() {

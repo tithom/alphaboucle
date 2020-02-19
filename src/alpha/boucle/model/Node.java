@@ -1,5 +1,6 @@
 package alpha.boucle.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +13,9 @@ import alpha.boucle.data.CoordinatesLoader;
  * @author Escape
  */
 public class Node {
+
+	/** For facultative dying node */
+	List<Node> childs = new ArrayList<>();
 
 	/** coordinates */
 	public Position position;
@@ -100,7 +104,11 @@ public class Node {
 	}
 
 	public String toStringShort() {
-		return new StringBuilder("[").append(position).append(" = ").append(minerai).append("]").toString();
+		StringBuilder sb = new StringBuilder("[").append(position).append(" = ").append(minerai);
+		if (!childs.isEmpty()) {
+			sb.append(" ").append(childs);
+		}
+		return sb.append("]").toString();
 	}
 
 	public static String toStringTabShort(Node... nodes) {
@@ -136,8 +144,16 @@ public class Node {
 		else {
 			dieStr = "N";
 		}
-		return new StringBuilder().append(position.toStringCopy()).append("\t\t").append(minerai)
-				.append("\t").append(dieStr).toString();
+		StringBuilder sb = new StringBuilder().append(position.toStringCopy()).append("\t\t").append(minerai)
+				.append("\t").append(dieStr);
+		if (!childs.isEmpty()) {
+			sb.append("\t");
+			for (Node node : childs) {
+				sb.append(node.position).append("=").append(node.minerai).append(" | ");
+			}
+			sb.setLength( sb.length() - 3 ); // remove last useless space
+		}
+		return sb.toString();
 	}
 
 	public String toCoordString() {
@@ -166,6 +182,14 @@ public class Node {
 
 	public boolean isInRange(Position p) {
 		return p.isInRange(position);
+	}
+
+	public int getNbChild() {
+		return childs.size();
+	}
+
+	public void addChild(Node n) {
+		childs.add(n);
 	}
 
 	@Override
